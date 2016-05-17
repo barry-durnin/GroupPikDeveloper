@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,11 +13,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    camerawidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    camerawidget.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    cameradialog.ui \
+    camerawidget.ui
 
 CONFIG += mobility
 MOBILITY = 
