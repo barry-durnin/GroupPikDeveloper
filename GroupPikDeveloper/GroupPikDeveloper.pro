@@ -14,14 +14,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    camerawidget.cpp
+    camerawidget.cpp \
+    logindialog.cpp \
+    tcpclient.cpp
 
 HEADERS  += mainwindow.h \
-    camerawidget.h
+    camerawidget.h \
+    logindialog.h \
+    tcpclient.h
 
 FORMS    += mainwindow.ui \
-    cameradialog.ui \
-    camerawidget.ui
+    camerawidget.ui \
+    logindialog.ui
 
 CONFIG += mobility
 MOBILITY = 

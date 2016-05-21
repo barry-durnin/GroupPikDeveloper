@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "cameradialog.h"
 #include "camerawidget.h"
+#include "logindialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,10 +9,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     pCamera = new CameraWidget(this);
+    pLogin = new LoginDialog(this);
+    pLogin->show();
 }
 
 MainWindow::~MainWindow()
 {
+    if(pLogin)
+    {
+        delete pLogin;
+    }
     if(pCamera)
     {
         delete pCamera;

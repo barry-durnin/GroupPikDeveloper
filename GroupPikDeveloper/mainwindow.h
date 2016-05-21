@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class CameraWidget;
+class LoginDialog;
 namespace Ui {
 class MainWindow;
 }
@@ -22,6 +23,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     CameraWidget *pCamera;
+    LoginDialog *pLogin;
 };
 
 #endif // MAINWINDOW_H
