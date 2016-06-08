@@ -1,2 +1,0 @@
-# GroupPikDeveloper
-App that allows users to create a group and share photos within the group. the photos will be locked down for a minimum time of twelve hours. Like old school disposable cameras users would snap photos and still stay in the moment without stressing over the photos etc. the next day all photos will unlock and notify the group. the photos can then be kept or deleted. uploaded to social sites etc all from app.
