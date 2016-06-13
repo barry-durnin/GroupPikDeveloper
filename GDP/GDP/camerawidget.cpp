@@ -13,30 +13,47 @@ CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Camera
     pViewFinder = NULL;
     pImageCapture = NULL;
     pLayout = NULL;
-    InitialiseCamera();
 
-    pLayout = new QVBoxLayout;
-    pLayout->addWidget(pViewFinder);
-    ui->CaptureArea->setLayout(pLayout);
+	if (!InitialiseCamera())
+	{
+		qDebug() << "Failed to initialise the camera module";
+		return;
+	}
+
+	pLayout = new QVBoxLayout;
+	pLayout->addWidget(pViewFinder);
+	ui->CaptureArea->setLayout(pLayout);
 }
 
 CameraWidget::~CameraWidget()
 {
-    if(pViewFinder)
-    {
-        delete pViewFinder;
-    }
-    if(pImageCapture)
-    {
-        delete pImageCapture;
-    }
-    if(pCamera)
-    {
-        pCamera->stop();
-        pCamera->unload();
-        pCamera->deleteLater();
-    }
-    delete ui;
+	if (pLayout)
+	{
+		delete pLayout;
+		pLayout = NULL;
+	}
+	if (pViewFinder)
+	{
+		delete pViewFinder;
+		pViewFinder = NULL;
+	}
+	if (pImageCapture)
+	{
+		delete pImageCapture;
+		pImageCapture = NULL;
+	}
+	if (pCamera)
+	{
+		pCamera->stop();
+		pCamera->unload();
+		pCamera->deleteLater();
+		pCamera = NULL;
+	}
+	if (ui)
+	{
+		delete ui;
+		ui = NULL;
+	}
 }
 
 //Override the show event

@@ -12,62 +12,102 @@
 //QT
 #include "ui_logindialog.h"
 #include <QMessageBox>
+#include <QDebug>
 
-LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint), ui(new Ui::LoginDialog)
+LoginDialog::LoginDialog(QWidget *parent) : QWidget(parent), ui(new Ui::Login)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 	//connect(ui->buttonLogin, SIGNAL(clicked()), this, SLOT(on_buttonLogin_clicked()));
 }
 
 LoginDialog::~LoginDialog()
 {
-    delete ui;
+	if (ui)
+	{
+		delete ui;
+		ui = NULL;
+	}
 }
 
 void LoginDialog::on_buttonLogin_clicked()
 {
-    QString message = "";
-    QString username = ui->lineEditUserName->text();
-    QString password = ui->lineEditPassword->text();
-    if(username.length() <= 0)
-    {
-        QMessageBox messageBox;
-        messageBox.critical(this,"Error","A username is required");
-        messageBox.setFixedSize(500,200);
-        return;
-    }
-    if(password.length() <= 0)
-    {
-        QMessageBox messageBox;
-        messageBox.critical(this,"Error","A password is required");
-        messageBox.setFixedSize(500,200);
-        return;
-    }
+	MessageBaseData* data = NULL;
+	
+	bool bSuccess = false;
+	QString message = "";
+	QString username = ui->lineEditUserName->text();
+	QString password = ui->lineEditPassword->text();
+	if(username.length() <= 0)
+	{
+		QMessageBox messageBox;
+		messageBox.critical(this,"Error","A username is required");
+		messageBox.setFixedSize(500,200);
+		return;
+	}
+	if(password.length() <= 0)
+	{
+		QMessageBox messageBox;
+		messageBox.critical(this,"Error","A password is required");
+		messageBox.setFixedSize(500,200);
+		return;
+	}
 
-    //connect to the login server
-    TcpClient* client = new TcpClient(this);
-    if(client->IsConnected())
-    {
-        if(ui->checkBoxStayLoggedIn->checkState() == Qt::Checked)
-        {
-        //stay logged in is checked. store some information that this device is verified and login automatically next launch
-        }
+	//connect to the login server
+	TcpClient* pClient = new TcpClient(this);
+	if(pClient->IsConnected())
+	{
+		if(ui->checkBoxStayLoggedIn->checkState() == Qt::Checked)
+		{
+		//stay logged in is checked. store some information that this device is verified and login automatically next launch
+		}
 
-
-        //Get main window
+		//Get main window
 		GDP* mainWindow = (GDP*)parent();
-        if(mainWindow)
-        {
-            MessageLoginData loginData(username, password);
-			MessageLoginData loginData1;
-            Q_ASSERT(mainWindow->GetMessageManager());
-            if(!mainWindow->GetMessageManager()->CreateMessage(message, &loginData))
-            {
-                //error
-            }
-			//mainWindow->GetMessageManager()->ReadMessage(message);
-        }
+		if(mainWindow)
+		{
+			MessageLoginData loginData(username, password);
+			Q_ASSERT(mainWindow->GetMessageManager());
+			if(!mainWindow->GetMessageManager()->CreateMessage(message, &loginData))
+			{
+				//error
+			}
+		}
 
-        client->Write(message);
-    }
+		pClient->Write(message);
+		pClient->Flush();
+		pClient->WaitForBytesWritten(1000);
+
+		pClient->WaitForBytesRead();
+
+		//read reply
+		unsigned int count = 0;
+		while (!data && count < 10)
+		{
+			data = pClient->GetLastMessage();
+			count++;
+			if (data)
+			{
+				if (data->eType == fail)
+				{
+					qDebug() << "Failed to login, use username == barry || robert. password can be anything not setup but must not be an empty field";
+					break;
+				}
+				if (data->eType == success)
+				{
+					bSuccess = true;
+					break;
+				}
+			}
+			pClient->WaitForBytesRead();
+		}
+	}
+
+	//close connection
+	delete pClient;
+	pClient = NULL;
+
+	if (bSuccess)
+	{
+		close();
+	}
 }

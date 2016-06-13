@@ -15,6 +15,9 @@ public:
 	GDP(QWidget *parent = 0);
 	~GDP();
     inline GDPMessages* GetMessageManager() const {return pMessageManager;}
+
+public slots:
+	void LoginClose();
 private:
 	Ui::GDPClass ui;
 	CameraWidget *pCamera;

@@ -6,7 +6,9 @@
 enum MessageType
 {
 	unknown_message_type,
-    login,
+	fail,
+	login,
+	success,
 	max_message_type
 };
 
@@ -22,7 +24,7 @@ private:
 protected:
     virtual QString CreateMessage(MessageBaseData* data) = 0;
     virtual bool VerifyMessage(const QString& data) = 0;
-	virtual MessageBaseData ReadMessage(const QStringList& data) = 0;
+	virtual MessageBaseData* ReadMessage(const QStringList& data) = 0;
 public:
     MessageBase();
     virtual ~MessageBase();

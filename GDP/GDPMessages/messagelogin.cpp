@@ -31,20 +31,19 @@ bool MessageLogin::VerifyMessage(const QString& data)
     return false;
 }
 
-MessageBaseData MessageLogin::ReadMessage(const QStringList& data)
+MessageBaseData* MessageLogin::ReadMessage(const QStringList& data)
 {
-	MessageLoginData output;
-
+	MessageLoginData* output = new MessageLoginData();
 	foreach(const QString &str, data)
 	{
 		if (str.contains("User="))
 		{
-			output.szUser = str.split('=').takeAt(1);
+			output->szUser = str.split('=').takeAt(1);
 			continue;
 		}
 		else if (str.contains("Pass="))
 		{
-			output.szPass = str.split('=').takeAt(1);
+			output->szPass = str.split('=').takeAt(1);
 			continue;
 		}
 	}

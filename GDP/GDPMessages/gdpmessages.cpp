@@ -1,11 +1,15 @@
 #include "gdpmessages.h"
 
 #include "messagebase.h"
+#include "messagefail.h"
 #include "messagelogin.h"
+#include "messagesuccess.h"
 
 GDPMessages::GDPMessages()
 {
 	m_mapMessages[login] = new MessageLogin();
+	m_mapMessages[fail] = new MessageFail();
+	m_mapMessages[success] = new MessageSuccess();
 }
 
 GDPMessages::~GDPMessages()
@@ -38,13 +42,13 @@ bool GDPMessages::VerifyMessage(const QString& stream)
 	return false;
 }
 
-MessageBaseData GDPMessages::ReadMessage(const QString& stream)
+MessageBaseData* GDPMessages::ReadMessage(const QString& stream)
 {
 	if (stream.isEmpty())
 	{
 		//return false;
 	}
-	MessageBaseData output;
+	MessageBaseData* output; //replacing with callback system. temp holder for now testing work flow
 	QStringList headerData;
 	QStringList bodyData;
 	MessageType type = max_message_type;

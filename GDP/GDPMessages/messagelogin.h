@@ -28,7 +28,7 @@ private:
     MessageLogin();
 	QString CreateMessage(MessageBaseData* data);
     bool VerifyMessage(const QString& data);
-	MessageBaseData ReadMessage(const QStringList& data);
+	MessageBaseData* ReadMessage(const QStringList& data);
 public:
     ~MessageLogin();
 };

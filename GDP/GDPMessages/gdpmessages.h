@@ -14,7 +14,7 @@ public:
 
 	bool CreateMessage(QString& output, MessageBaseData* data);
 	bool VerifyMessage(const QString& stream);
-	MessageBaseData ReadMessage(const QString& stream);
+	MessageBaseData* ReadMessage(const QString& stream);
 private:
 	QMap<int, MessageBase*> m_mapMessages;
 };

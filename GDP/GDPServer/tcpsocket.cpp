@@ -2,6 +2,9 @@
 
 #include "gdpmessages.h"
 #include "messagebase.h"
+#include "messagefail.h"
+#include "messagelogin.h"
+#include "messagesuccess.h"
 
 #include <QTcpSocket>
 //#include <QByteArray>
@@ -14,12 +17,6 @@ TcpSocket::TcpSocket(QTcpSocket* socket, QObject *parent) : QObject(parent)
 		connect(pSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 		connect(pSocket, SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
 		connect(pSocket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-
-		pSocket->write("Hello client\r\n");
-		pSocket->flush();
-
-		int milliseconds = 1000;
-		pSocket->waitForBytesWritten(milliseconds);
 	}
 	else
 	{
@@ -46,12 +43,7 @@ TcpSocket::~TcpSocket()
 
 void TcpSocket::disconnected()
 {
-	if (pSocket)
-	{
-		pSocket->close();
-		delete pSocket;
-		pSocket = NULL;
-	}
+	qDebug() << "disconnected...";
 }
 
 void TcpSocket::bytesWritten(qint64 size)
@@ -61,19 +53,45 @@ void TcpSocket::bytesWritten(qint64 size)
 
 void TcpSocket::readyRead()
 {
+	qDebug() << "bytesRead...";
+
 	if (pSocket->bytesAvailable())
 	{
+		MessageLoginData* loginData;
+
+		QString outMessage = "";
 		QByteArray buffer = pSocket->readAll();
 		QString stream(buffer);
-		MessageBaseData data = pMessageManager->ReadMessage(stream);
-		switch (data.eType)
+		MessageBaseData* data = pMessageManager->ReadMessage(stream);
+		switch (data->eType)
 		{
 		case login:
-			qDebug() << "Login message";
+			//look in the database, for now check user name for our names just for testing
+			loginData = static_cast<MessageLoginData*>(data);
+			if (loginData->szUser.contains("barry") || loginData->szUser.contains("robert"))
+			{
+				MessageSuccessData successData;
+				pMessageManager->CreateMessage(outMessage, &successData);
+				pSocket->write(outMessage.toStdString().c_str());
+			}
+			else
+			{
+				MessageFailData failData;
+				pMessageManager->CreateMessage(outMessage, &failData);
+				pSocket->write(outMessage.toStdString().c_str());
+			}
 			break;
 		default:
 			qDebug() << "Unknown Message";
 			break;
 		}
+
+		if (data)
+		{
+			delete data;
+			data = NULL;
+		}
 	}
+	pSocket->flush();
+	pSocket->waitForBytesWritten(1000);
 }

@@ -26,7 +26,7 @@ TcpServer::TcpServer(QObject *parent) : QObject(parent)
 
 TcpServer::~TcpServer()
 {
-	for (unsigned int i = 0; i < m_connectedSockets.size(); ++i)
+	for (int i = 0; i < m_connectedSockets.size(); ++i)
 	{
 		TcpSocket* pSocket = m_connectedSockets[i];
 		if (pSocket)
@@ -40,10 +40,12 @@ TcpServer::~TcpServer()
     if(pDatabase)
     {
         delete pDatabase;
+		pDatabase = NULL;
     }
     if(pServer)
     {
         delete pServer;
+		pServer = NULL;
     }
 }
 
