@@ -8,9 +8,9 @@ MessageFail::~MessageFail()
 {
 }
 
-QString MessageFail::CreateMessage(MessageBaseData* data)
+QByteArray MessageFail::CreateMessage(MessageBaseData* data)
 {
-	QString str;
+	QByteArray str;
 	str.append("HeaderStart");
 	str.append(";Type=" + QString::number(data->eType));
 	str.append(";HeaderFinish;###");

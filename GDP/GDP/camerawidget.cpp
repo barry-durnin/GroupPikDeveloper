@@ -1,9 +1,23 @@
 #include "camerawidget.h"
+
+//local
+#include "gdp.h"
+#include "tcpclient.h"
+
+//message library
+#include <gdpmessages.h>
+#include <messagebase.h>
+#include <messagefile.h>
+
+//QT
 #include "ui_camerawidget.h"
+#include <QBuffer>
 #include <QCamera>
 #include <QCameraInfo>
 #include <QCameraViewfinder>
 #include <QCameraImageCapture>
+#include <QDebug>
+#include <QMessageBox>
 #include <QVBoxLayout>
 
 CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::CameraWidget)
@@ -139,7 +153,69 @@ void CameraWidget::on_buttonClick_clicked()
 
 void CameraWidget::processSavedImage(int requestId, QString str)
 {
-	QImage my_image(str);
+	QByteArray message = "";
+	QImage image(str);
+	QByteArray szFile;
+
+	if (image.isNull())
+	{
+		QMessageBox messageBox;
+		messageBox.critical(this, "Error", "image cannot be opened");
+		messageBox.setFixedSize(500, 200);
+		return;
+	}
+
+	//convert to qbyte array
+	QBuffer buffer(&szFile);
+	buffer.open(QIODevice::WriteOnly);
+	if (!image.save(&buffer, "PNG"))
+	{
+		qDebug() << "Failed to create qbyte buffer from captured image";
+		return;
+	}
+	buffer.close();
+	
 
 	//delete the image off the hdd and store it within the app and sed the image to the server for storing
+	
+	//process
+	MessageBaseData* data = NULL;
+	TcpClient* pClient = new TcpClient(this);
+	if (pClient->IsConnected())
+	{
+		MessageFileData fileData(szFile);
+		Q_ASSERT(pClient->GetMessageManager());
+		if (!pClient->GetMessageManager()->CreateMessage(message, &fileData))
+		{
+			//error
+		}
+	
+
+		pClient->Write(message);
+		pClient->Flush();
+		pClient->WaitForBytesWritten(1000);
+
+		pClient->WaitForBytesRead();
+		data = pClient->GetLastMessage();
+		if (data)
+		{
+			QMessageBox messageBox;
+			switch (data->eType)
+			{
+			case fail:
+				messageBox.critical(this, "Error", "Failed to upload photo");
+				messageBox.setFixedSize(500, 200);
+				break;
+			case success:
+				break;
+			default:
+				qDebug() << "Unknown message recieved id: " << data->eType;
+				break;
+			}
+		}
+	}
+
+	//close connection
+	delete pClient;
+	pClient = NULL;
 }

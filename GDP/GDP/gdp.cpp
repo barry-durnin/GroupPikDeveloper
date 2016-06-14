@@ -3,11 +3,10 @@
 #include "logindialog.h"
 #include "gdpmessages.h"
 
-GDP::GDP(QWidget *parent) : QMainWindow(parent), pCamera(NULL), pLogin(NULL), pMessageManager(NULL)
+GDP::GDP(QWidget *parent) : QMainWindow(parent), pCamera(NULL), pLogin(NULL)
 {
 	ui.setupUi(this);
 
-	pMessageManager = new GDPMessages();
 	
 	pLogin = new LoginDialog(this);
 	pLogin->setAttribute(Qt::WA_DeleteOnClose);
@@ -18,11 +17,6 @@ GDP::GDP(QWidget *parent) : QMainWindow(parent), pCamera(NULL), pLogin(NULL), pM
 
 GDP::~GDP()
 {
-    if(pMessageManager)
-    {
-        delete pMessageManager;
-        pMessageManager = NULL;
-    }
     if(pLogin)
     {
         delete pLogin;

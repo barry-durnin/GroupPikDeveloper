@@ -12,9 +12,9 @@ MessageLogin::~MessageLogin()
 
 }
 
-QString MessageLogin::CreateMessage(MessageBaseData* data)
+QByteArray MessageLogin::CreateMessage(MessageBaseData* data)
 {
-	QString str;
+	QByteArray str;
 	MessageLoginData* loginData = static_cast<MessageLoginData*>(data);
 	str.append("HeaderStart");
 	str.append(";Type=" + QString::number(data->eType));
@@ -33,17 +33,26 @@ bool MessageLogin::VerifyMessage(const QString& data)
 
 MessageBaseData* MessageLogin::ReadMessage(const QStringList& data)
 {
+	QStringList list;
 	MessageLoginData* output = new MessageLoginData();
 	foreach(const QString &str, data)
 	{
 		if (str.contains("User="))
 		{
-			output->szUser = str.split('=').takeAt(1);
+			list = str.split('=');
+			if (list.length())
+			{
+				output->szUser = list.takeAt(1);
+			}
 			continue;
 		}
 		else if (str.contains("Pass="))
 		{
-			output->szPass = str.split('=').takeAt(1);
+			list = str.split('=');
+			if (list.length())
+			{
+				output->szPass = list.takeAt(1);
+			}
 			continue;
 		}
 	}

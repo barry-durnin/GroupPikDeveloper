@@ -2,14 +2,16 @@
 
 #include "messagebase.h"
 #include "messagefail.h"
+#include "messagefile.h"
 #include "messagelogin.h"
 #include "messagesuccess.h"
 
 GDPMessages::GDPMessages()
 {
-	m_mapMessages[login] = new MessageLogin();
-	m_mapMessages[fail] = new MessageFail();
 	m_mapMessages[success] = new MessageSuccess();
+	m_mapMessages[fail] = new MessageFail();
+	m_mapMessages[login] = new MessageLogin();
+	m_mapMessages[file] = new MessageFile();
 }
 
 GDPMessages::~GDPMessages()
@@ -18,7 +20,7 @@ GDPMessages::~GDPMessages()
 	m_mapMessages.clear();
 }
 
-bool GDPMessages::CreateMessage(QString& output, MessageBaseData* data)
+bool GDPMessages::CreateMessage(QByteArray& output, MessageBaseData* data)
 {
 	if (!data)
 	{

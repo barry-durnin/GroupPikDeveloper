@@ -59,7 +59,7 @@ void TcpSocket::readyRead()
 	{
 		MessageLoginData* loginData;
 
-		QString outMessage = "";
+		QByteArray outMessage = "";
 		QByteArray buffer = pSocket->readAll();
 		QString stream(buffer);
 		MessageBaseData* data = pMessageManager->ReadMessage(stream);
@@ -82,7 +82,7 @@ void TcpSocket::readyRead()
 			}
 			break;
 		default:
-			qDebug() << "Unknown Message";
+			qDebug() << "Unknown Message id: " << data->eType;
 			break;
 		}
 

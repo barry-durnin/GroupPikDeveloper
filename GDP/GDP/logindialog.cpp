@@ -1,18 +1,18 @@
 #include "logindialog.h"
 
 //Local
-#include "tcpclient.h"
-#include "messagelogin.h"
 #include "gdp.h"
+#include "tcpclient.h"
 
 //Message library
 #include <gdpmessages.h>
 #include <messagebase.h>
+#include <messagelogin.h>
 
 //QT
 #include "ui_logindialog.h"
-#include <QMessageBox>
 #include <QDebug>
+#include <QMessageBox>
 
 LoginDialog::LoginDialog(QWidget *parent) : QWidget(parent), ui(new Ui::Login)
 {
@@ -34,7 +34,7 @@ void LoginDialog::on_buttonLogin_clicked()
 	MessageBaseData* data = NULL;
 	
 	bool bSuccess = false;
-	QString message = "";
+	QByteArray message = "";
 	QString username = ui->lineEditUserName->text();
 	QString password = ui->lineEditPassword->text();
 	if(username.length() <= 0)
@@ -61,16 +61,11 @@ void LoginDialog::on_buttonLogin_clicked()
 			//stay logged in is checked. store some information that this device is verified and login automatically next launch
 		}
 
-		//Get main window
-		GDP* mainWindow = (GDP*)parent();
-		if (mainWindow)
+		MessageLoginData loginData(username, password);
+		Q_ASSERT(pClient->GetMessageManager());
+		if (!pClient->GetMessageManager()->CreateMessage(message, &loginData))
 		{
-			MessageLoginData loginData(username, password);
-			Q_ASSERT(mainWindow->GetMessageManager());
-			if (!mainWindow->GetMessageManager()->CreateMessage(message, &loginData))
-			{
-				//error
-			}
+			//error
 		}
 
 		pClient->Write(message);

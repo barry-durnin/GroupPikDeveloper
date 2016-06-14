@@ -7,6 +7,7 @@ enum MessageType
 {
 	unknown_message_type,
 	fail,
+	file,
 	login,
 	success,
 	max_message_type
@@ -22,7 +23,7 @@ class MessageBase
 private:
     friend class GDPMessages;
 protected:
-    virtual QString CreateMessage(MessageBaseData* data) = 0;
+    virtual QByteArray CreateMessage(MessageBaseData* data) = 0;
     virtual bool VerifyMessage(const QString& data) = 0;
 	virtual MessageBaseData* ReadMessage(const QStringList& data) = 0;
 public:

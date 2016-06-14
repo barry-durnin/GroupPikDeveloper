@@ -12,7 +12,7 @@ public:
 	GDPMessages();
 	~GDPMessages();
 
-	bool CreateMessage(QString& output, MessageBaseData* data);
+	bool CreateMessage(QByteArray& output, MessageBaseData* data);
 	bool VerifyMessage(const QString& stream);
 	MessageBaseData* ReadMessage(const QString& stream);
 private:

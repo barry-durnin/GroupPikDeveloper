@@ -8,13 +8,13 @@ MessageSuccess::~MessageSuccess()
 {
 }
 
-QString MessageSuccess::CreateMessage(MessageBaseData* data)
+QByteArray MessageSuccess::CreateMessage(MessageBaseData* data)
 {
-	QString str;
-	str.append("HeaderStart");
-	str.append(";Type=" + QString::number(data->eType));
-	str.append(";HeaderFinish;###");
-	return str;
+	QByteArray bytes;
+	bytes.append("HeaderStart");
+	bytes.append(";Type=" + QString::number(data->eType));
+	bytes.append(";HeaderFinish;###");
+	return bytes;
 }
 
 bool MessageSuccess::VerifyMessage(const QString& data)

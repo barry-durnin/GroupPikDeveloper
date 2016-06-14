@@ -21,7 +21,9 @@ public:
 	void WaitForBytesWritten(unsigned int millisecond);
 	void WaitForBytesRead();
 	void Flush();
+	
 
+	inline GDPMessages* GetMessageManager() const { return pMessageManager; }
 	inline MessageBaseData* GetLastMessage() { return m_lastMessage; }
 signals:
 

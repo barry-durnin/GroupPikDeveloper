@@ -16,7 +16,7 @@ class MessageSuccess : public MessageBase
 private:
 	friend class GDPMessages;
 	MessageSuccess();
-	QString CreateMessage(MessageBaseData* data);
+	QByteArray CreateMessage(MessageBaseData* data);
 	bool VerifyMessage(const QString& data);
 	MessageBaseData* ReadMessage(const QStringList& data);
 public:
