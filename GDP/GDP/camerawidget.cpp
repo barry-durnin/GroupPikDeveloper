@@ -23,6 +23,8 @@ CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Camera
 	pLayout = new QVBoxLayout;
 	pLayout->addWidget(pViewFinder);
 	ui->CaptureArea->setLayout(pLayout);
+
+	//connect(ui->buttonClick, SIGNAL(clicked()), this, SLOT(on_buttonClick_clicked()));
 }
 
 CameraWidget::~CameraWidget()
@@ -108,10 +110,36 @@ bool CameraWidget::InitialiseCamera()
         {
             pViewFinder = new QCameraViewfinder(this);
             pCamera->setViewfinder(pViewFinder);
+			pCamera->setCaptureMode(QCamera::CaptureStillImage);
 
             pImageCapture = new QCameraImageCapture(pCamera, this);
+			QImageEncoderSettings encoder_setting = pImageCapture->encodingSettings();
+			encoder_setting.setCodec("image/jpeg");
+			encoder_setting.setQuality(QMultimedia::NormalQuality);
+			encoder_setting.setResolution(800, 600);
+			pImageCapture->setEncodingSettings(encoder_setting);
+			connect(pImageCapture, SIGNAL(imageSaved(int, QString)), this, SLOT(processSavedImage(int, QString)));
             return true;
         }
     }
     return false;
+}
+
+void CameraWidget::on_buttonClick_clicked()
+{
+	//on half pressed shutter button
+	pCamera->searchAndLock();
+
+	//on shutter button pressed
+	int id = pImageCapture->capture();
+
+	//on shutter button released
+	pCamera->unlock();
+}
+
+void CameraWidget::processSavedImage(int requestId, QString str)
+{
+	QImage my_image(str);
+
+	//delete the image off the hdd and store it within the app and sed the image to the server for storing
 }

@@ -54,20 +54,20 @@ void LoginDialog::on_buttonLogin_clicked()
 
 	//connect to the login server
 	TcpClient* pClient = new TcpClient(this);
-	if(pClient->IsConnected())
+	if (pClient->IsConnected())
 	{
-		if(ui->checkBoxStayLoggedIn->checkState() == Qt::Checked)
+		if (ui->checkBoxStayLoggedIn->checkState() == Qt::Checked)
 		{
-		//stay logged in is checked. store some information that this device is verified and login automatically next launch
+			//stay logged in is checked. store some information that this device is verified and login automatically next launch
 		}
 
 		//Get main window
 		GDP* mainWindow = (GDP*)parent();
-		if(mainWindow)
+		if (mainWindow)
 		{
 			MessageLoginData loginData(username, password);
 			Q_ASSERT(mainWindow->GetMessageManager());
-			if(!mainWindow->GetMessageManager()->CreateMessage(message, &loginData))
+			if (!mainWindow->GetMessageManager()->CreateMessage(message, &loginData))
 			{
 				//error
 			}
@@ -78,27 +78,23 @@ void LoginDialog::on_buttonLogin_clicked()
 		pClient->WaitForBytesWritten(1000);
 
 		pClient->WaitForBytesRead();
-
-		//read reply
-		unsigned int count = 0;
-		while (!data && count < 10)
+		data = pClient->GetLastMessage();
+		if (data)
 		{
-			data = pClient->GetLastMessage();
-			count++;
-			if (data)
+			QMessageBox messageBox;
+			switch (data->eType)
 			{
-				if (data->eType == fail)
-				{
-					qDebug() << "Failed to login, use username == barry || robert. password can be anything not setup but must not be an empty field";
-					break;
-				}
-				if (data->eType == success)
-				{
-					bSuccess = true;
-					break;
-				}
+			case fail:
+				messageBox.critical(this, "Error", "Failed to login, use username is barry or robert. password can be anything not setup but must not be an empty field");
+				messageBox.setFixedSize(500, 200);
+				break;
+			case success:
+				bSuccess = true;
+				break;
+			default:
+				qDebug() << "Unknown message recieved id: " << data->eType;
+				break;
 			}
-			pClient->WaitForBytesRead();
 		}
 	}
 

@@ -1,6 +1,7 @@
 #include "tcpclient.h"
 
 #include "gdpmessages.h"
+#include "messagebase.h"
 
 #include <QNetworkSession>
 #include <QObject>
@@ -68,7 +69,6 @@ void TcpClient::readyRead()
 	if (pTcpSocket->bytesAvailable())
 	{
 		QByteArray bytes = pTcpSocket->readAll();
-		qDebug() << bytes;
 		m_lastMessage = pMessageManager->ReadMessage(bytes);
 	}
 }
