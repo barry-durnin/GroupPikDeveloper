@@ -157,6 +157,8 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 	QImage image(str);
 	QByteArray szFile;
 
+	QSize size = image.size();
+
 	if (image.isNull())
 	{
 		QMessageBox messageBox;
@@ -218,4 +220,10 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 	//close connection
 	delete pClient;
 	pClient = NULL;
+
+	//delete the file off the device
+	if (!QFile::remove(str))
+	{
+		qDebug() << "Major error cannot remove the captured image fomr the device";
+	}
 }

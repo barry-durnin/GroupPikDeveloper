@@ -12,36 +12,25 @@ QByteArray MessageFile::CreateMessage(MessageBaseData* data)
 {
 	QByteArray str;
 	MessageFileData* fileData = static_cast<MessageFileData*>(data);
-	str.append("HeaderStart");
-	str.append(";Type=" + QString::number(data->eType));
-	str.append(";HeaderFinish;###");
-	str.append("BodyStart");
-	str.append(";File=" + fileData->szFile);
-	str.append(";BodyFinish;");
+	str.append(fileData->szFile);
+
+	str = MessageBase::CreateMessageTemplate(file, str);
 	return str;
 }
 
-bool MessageFile::VerifyMessage(const QString& data)
+bool MessageFile::VerifyMessage(const QByteArrayList& data)
 {
 	return true;
 }
 
-MessageBaseData* MessageFile::ReadMessage(const QStringList& data)
+MessageBaseData* MessageFile::ReadMessage(const QByteArrayList& data)
 {
 	QStringList list;
 	MessageFileData* output = new MessageFileData();
-	foreach(const QString &str, data)
-	{
-		if (str.contains("File="))
-		{
-			list = str.split('=');
-			if (list.length())
-			{
-				output->szFile = list.takeAt(1).toUtf8();
-			}
-			break;
-		}
-	}
 
+	foreach(const QByteArray &str, data)
+	{
+		output->szFile.append(str);
+	}
 	return output;
 }

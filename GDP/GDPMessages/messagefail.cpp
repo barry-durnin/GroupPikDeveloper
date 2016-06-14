@@ -10,19 +10,15 @@ MessageFail::~MessageFail()
 
 QByteArray MessageFail::CreateMessage(MessageBaseData* data)
 {
-	QByteArray str;
-	str.append("HeaderStart");
-	str.append(";Type=" + QString::number(data->eType));
-	str.append(";HeaderFinish;###");
-	return str;
+	return MessageBase::CreateMessageTemplate(fail, "");
 }
 
-bool MessageFail::VerifyMessage(const QString& data)
+bool MessageFail::VerifyMessage(const QByteArrayList& data)
 {
 	return true;
 }
 
-MessageBaseData* MessageFail::ReadMessage(const QStringList& data)
+MessageBaseData* MessageFail::ReadMessage(const QByteArrayList& data)
 {
 	return new MessageFailData();
 }

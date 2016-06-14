@@ -16,26 +16,25 @@ QByteArray MessageLogin::CreateMessage(MessageBaseData* data)
 {
 	QByteArray str;
 	MessageLoginData* loginData = static_cast<MessageLoginData*>(data);
-	str.append("HeaderStart");
-	str.append(";Type=" + QString::number(data->eType));
-	str.append(";HeaderFinish;###");
-	str.append(";BodyStart");
 	str.append(";User=" + loginData->szUser);
 	str.append(";Pass=" + loginData->szPass);
-	str.append(";BodyFinish;\0");
+
+	str = MessageBase::CreateMessageTemplate(login, str);
 	return str;
 }
 
-bool MessageLogin::VerifyMessage(const QString& data)
+bool MessageLogin::VerifyMessage(const QByteArrayList& data)
 {
     return false;
 }
 
-MessageBaseData* MessageLogin::ReadMessage(const QStringList& data)
+MessageBaseData* MessageLogin::ReadMessage(const QByteArrayList& data)
 {
 	QStringList list;
 	MessageLoginData* output = new MessageLoginData();
-	foreach(const QString &str, data)
+
+	QByteArrayList tmp = data.first().split(';');
+	foreach(const QString &str, tmp)
 	{
 		if (str.contains("User="))
 		{

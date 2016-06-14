@@ -35,7 +35,7 @@ bool GDPMessages::CreateMessage(QByteArray& output, MessageBaseData* data)
 	return false;
 }
 
-bool GDPMessages::VerifyMessage(const QString& stream)
+bool GDPMessages::VerifyMessage(const QByteArray& stream)
 {
 	if(stream.length())
 	{
@@ -44,20 +44,47 @@ bool GDPMessages::VerifyMessage(const QString& stream)
 	return false;
 }
 
-MessageBaseData* GDPMessages::ReadMessage(const QString& stream)
+unsigned int GDPMessages::GetMessageSize(const QByteArray& stream)
+{
+	if (stream.isEmpty())
+	{
+		//return false;
+	}
+	unsigned int size = 0;
+	QByteArrayList headerData;
+	
+	headerData = stream.split('#');
+	headerData = headerData.first().split(';');
+	foreach(const QString &str, headerData)
+	{
+		if (str.contains("Size="))
+		{
+			QString tmp = str.split('=').last();
+			tmp = tmp.split('*').first();
+			size = tmp.toInt();
+			break;
+		}
+	}
+	return size;
+}
+
+MessageBaseData* GDPMessages::ReadMessage(const QByteArray& stream)
 {
 	if (stream.isEmpty())
 	{
 		//return false;
 	}
 	MessageBaseData* output; //replacing with callback system. temp holder for now testing work flow
-	QStringList headerData;
-	QStringList bodyData;
+	QByteArrayList headerData;
+	QByteArrayList bodyData;
 	MessageType type = max_message_type;
 
-	headerData = stream.split("###");
-	bodyData = headerData.takeLast().split(';');
+	headerData = stream.split('#');
+
+	bodyData = headerData;
+	bodyData.removeFirst();
 	headerData = headerData.first().split(';');
+
 	foreach(const QString &str, headerData)
 	{
 		

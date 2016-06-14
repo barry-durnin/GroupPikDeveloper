@@ -73,9 +73,9 @@ void TcpClient::readyRead()
 	}
 }
 
-void TcpClient::Write(const QString& message)
+void TcpClient::Write(const QByteArray& message)
 {
-    pTcpSocket->write(message.toStdString().c_str());
+    pTcpSocket->write(message);
 }
 
 void TcpClient::WaitForBytesWritten(unsigned int millisecond)

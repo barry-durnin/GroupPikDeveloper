@@ -13,8 +13,9 @@ public:
 	~GDPMessages();
 
 	bool CreateMessage(QByteArray& output, MessageBaseData* data);
-	bool VerifyMessage(const QString& stream);
-	MessageBaseData* ReadMessage(const QString& stream);
+	bool VerifyMessage(const QByteArray& stream);
+	MessageBaseData* ReadMessage(const QByteArray& stream);
+	unsigned int GetMessageSize(const QByteArray& stream);
 private:
 	QMap<int, MessageBase*> m_mapMessages;
 };

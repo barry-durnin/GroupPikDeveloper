@@ -16,7 +16,7 @@ class TcpClient : public QObject
 public:
     explicit TcpClient(QObject *parent = 0);
     ~TcpClient();
-    void Write(const QString& message);
+    void Write(const QByteArray& message);
     bool IsConnected();
 	void WaitForBytesWritten(unsigned int millisecond);
 	void WaitForBytesRead();
