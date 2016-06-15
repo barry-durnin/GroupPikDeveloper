@@ -1,7 +1,8 @@
 #ifndef MESSAGEBASE_H
 #define MESSAGEBASE_H
 
-#include <QByteArrayList>
+#include <QByteArray>
+#include <QString>
 
 enum MessageType
 {
@@ -25,8 +26,8 @@ private:
 protected:
 	QByteArray CreateMessageTemplate(MessageType type, const QByteArray& data);
     virtual QByteArray CreateMessage(MessageBaseData* data) = 0;
-    virtual bool VerifyMessage(const QByteArrayList& data) = 0;
-	virtual MessageBaseData* ReadMessage(const QByteArrayList& data) = 0;
+    virtual bool VerifyMessage(const QByteArray& data) = 0;
+	virtual MessageBaseData* ReadMessage(const QByteArray& data) = 0;
 public:
     MessageBase();
     virtual ~MessageBase();

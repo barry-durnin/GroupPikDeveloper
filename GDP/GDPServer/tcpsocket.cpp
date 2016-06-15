@@ -96,13 +96,13 @@ void TcpSocket::readyRead()
 			if (fileData->szFile.size() > 0)
 			{
 				//640*480
-				//QImage img(640, 480, QImage::Format_Indexed8);
-				//img = QImage::fromData(fileData->szFile, "PNG");
+				QImage img(640, 480, QImage::Format_Indexed8);
+				img = QImage::fromData(fileData->szFile, "PNG");
 
-				//if (img.save("image.png"))
-				//{
+				if (img.save("image.png"))
+				{
 					bSuccess = true;
-				//}
+				}
 			}
 			break;
 		default:

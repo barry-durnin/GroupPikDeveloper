@@ -13,12 +13,12 @@ QByteArray MessageFail::CreateMessage(MessageBaseData* data)
 	return MessageBase::CreateMessageTemplate(fail, "");
 }
 
-bool MessageFail::VerifyMessage(const QByteArrayList& data)
+bool MessageFail::VerifyMessage(const QByteArray& data)
 {
 	return true;
 }
 
-MessageBaseData* MessageFail::ReadMessage(const QByteArrayList& data)
+MessageBaseData* MessageFail::ReadMessage(const QByteArray& data)
 {
 	return new MessageFailData();
 }

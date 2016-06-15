@@ -176,7 +176,16 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 		return;
 	}
 	buffer.close();
-	
+
+#if 0
+	//test the byte buffer
+	QImage testImage(640, 480, QImage::Format_Indexed8);
+	testImage = QImage::fromData(szFile, "PNG");
+	if (testImage.save("image.png"))
+	{
+		qDebug() << "Success";
+	}
+#endif
 
 	//delete the image off the hdd and store it within the app and sed the image to the server for storing
 	
@@ -191,7 +200,26 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 		{
 			//error
 		}
-	
+#if 0
+		MessageBaseData* tmpdata = pClient->GetMessageManager()->ReadMessage(message);
+		if (!tmpdata)
+		{
+			qDebug() << "Fail";
+		}
+
+		MessageFileData* fData = static_cast<MessageFileData*>(tmpdata);
+		if (fData->szFile != szFile)
+		{
+			qDebug() << "Fail";
+		}
+
+		QImage testImage1(640, 480, QImage::Format_Indexed8);
+		testImage1 = QImage::fromData(fData->szFile, "PNG");
+		if (testImage1.save("image.png"))
+		{
+			qDebug() << "Success";
+		}
+#endif
 
 		pClient->Write(message);
 		pClient->Flush();

@@ -23,17 +23,17 @@ QByteArray MessageLogin::CreateMessage(MessageBaseData* data)
 	return str;
 }
 
-bool MessageLogin::VerifyMessage(const QByteArrayList& data)
+bool MessageLogin::VerifyMessage(const QByteArray& data)
 {
     return false;
 }
 
-MessageBaseData* MessageLogin::ReadMessage(const QByteArrayList& data)
+MessageBaseData* MessageLogin::ReadMessage(const QByteArray& data)
 {
 	QStringList list;
 	MessageLoginData* output = new MessageLoginData();
 
-	QByteArrayList tmp = data.first().split(';');
+	QByteArrayList tmp = data.split(';');
 	foreach(const QString &str, tmp)
 	{
 		if (str.contains("User="))

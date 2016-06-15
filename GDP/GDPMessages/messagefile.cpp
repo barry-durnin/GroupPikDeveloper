@@ -18,19 +18,17 @@ QByteArray MessageFile::CreateMessage(MessageBaseData* data)
 	return str;
 }
 
-bool MessageFile::VerifyMessage(const QByteArrayList& data)
+bool MessageFile::VerifyMessage(const QByteArray& data)
 {
 	return true;
 }
 
-MessageBaseData* MessageFile::ReadMessage(const QByteArrayList& data)
+MessageBaseData* MessageFile::ReadMessage(const QByteArray& data)
 {
 	QStringList list;
 	MessageFileData* output = new MessageFileData();
 
-	foreach(const QByteArray &str, data)
-	{
-		output->szFile.append(str);
-	}
+	output->szFile = data;
+
 	return output;
 }

@@ -27,8 +27,8 @@ private:
     friend class GDPMessages;
     MessageLogin();
 	QByteArray CreateMessage(MessageBaseData* data);
-    bool VerifyMessage(const QByteArrayList& data);
-	MessageBaseData* ReadMessage(const QByteArrayList& data);
+    bool VerifyMessage(const QByteArray& data);
+	MessageBaseData* ReadMessage(const QByteArray& data);
 public:
     ~MessageLogin();
 };

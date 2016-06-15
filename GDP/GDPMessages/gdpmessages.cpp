@@ -53,7 +53,7 @@ unsigned int GDPMessages::GetMessageSize(const QByteArray& stream)
 	unsigned int size = 0;
 	QByteArrayList headerData;
 	
-	headerData = stream.split('#');
+	headerData = stream.split(char('#'));
 	headerData = headerData.first().split(';');
 	foreach(const QString &str, headerData)
 	{
@@ -76,13 +76,15 @@ MessageBaseData* GDPMessages::ReadMessage(const QByteArray& stream)
 	}
 	MessageBaseData* output; //replacing with callback system. temp holder for now testing work flow
 	QByteArrayList headerData;
-	QByteArrayList bodyData;
+	QByteArray bodyData;
 	MessageType type = max_message_type;
 
-	headerData = stream.split('#');
+	headerData = stream.split(char('#'));
+	int size = headerData.first().size() + 1;
+	
+	bodyData = stream.right(stream.size() - size);
 
-	bodyData = headerData;
-	bodyData.removeFirst();
+
 	headerData = headerData.first().split(';');
 
 	foreach(const QString &str, headerData)
