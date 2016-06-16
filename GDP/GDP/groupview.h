@@ -4,6 +4,9 @@
 #include <QMap>
 #include <QWidget>
 
+class CameraWidget;
+class GroupViewSettingsWidget;
+
 class QPushButton;
 class QVBoxLayout;
 class QWidget;
@@ -36,12 +39,17 @@ public:
 
 private slots:
 	void on_buttonNewGroup_clicked();
-
+	void GroupSettingsApplyButton();
+	void GroupSettingsCancelButton();
+	void ActivateCamera();
 private:
 	Ui::GroupView* pUI;
-
 	QWidget*	pScrollAreaWidget;
 	QVBoxLayout* pScrollAreaLayout;
+
+	CameraWidget *pCamera;
+
+	GroupViewSettingsWidget* pGroupSettingsWidget;
 
 	QMap<QString, GroupNodeData*> m_groupMap;
 };

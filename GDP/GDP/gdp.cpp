@@ -1,11 +1,9 @@
 #include "gdp.h"
 
-#include "camerawidget.h"
-#include "gdpmessages.h"
 #include "groupview.h"
 #include "logindialog.h"
 
-GDP::GDP(QWidget *parent) : QMainWindow(parent), pCamera(NULL), pLogin(NULL), pGroupView(NULL)
+GDP::GDP(QWidget *parent) : QMainWindow(parent), pLogin(NULL), pGroupView(NULL)
 {
 	ui.setupUi(this);
 
@@ -29,11 +27,6 @@ GDP::~GDP()
 		delete pGroupView;
 		pGroupView = NULL;
 	}
-	if (pCamera)
-	{
-		delete pCamera;
-		pCamera = NULL;
-	}
 }
 
 void GDP::LoginClose()
@@ -47,11 +40,4 @@ void GDP::LoginClose()
 	{
 		pGroupView->show();
 	}
-
-//	pCamera = new CameraWidget(this);
-//	setCentralWidget(pCamera);
-// 	if (pCamera)
-// 	{
-// 		pCamera->show();
-// 	}
 }

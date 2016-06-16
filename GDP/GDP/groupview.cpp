@@ -1,6 +1,12 @@
 #include "groupview.h"
 
+//local
+#include "camerawidget.h"
+#include "groupviewsettings.h"
+
+//qt
 #include "ui_groupview.h"
+#include "ui_groupviewsettings.h"
 #include <QDebug>
 
 GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui::GroupView)
@@ -10,6 +16,15 @@ GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui:
 	pScrollAreaLayout = new QVBoxLayout(pScrollAreaWidget);
 	pUI->scrollArea->setWidget(pScrollAreaWidget);
 	pUI->scrollArea->setWidgetResizable(true);
+
+	pCamera = new CameraWidget(parent);
+	
+	//This widget is a fried class, allows access to the ui member within
+	pGroupSettingsWidget = new GroupViewSettingsWidget(parent);
+	pGroupSettingsWidget->hide();
+	//connect the settings widget button pressed to signal this widget. this widget will know when cancel and apply buttons have been clicked
+	connect(pGroupSettingsWidget->pUI->pushButtonApply, SIGNAL(clicked()), this, SLOT(GroupSettingsApplyButton()));
+	connect(pGroupSettingsWidget->pUI->pushButtonCancel, SIGNAL(clicked()), this, SLOT(GroupSettingsCancelButton()));
 }
 
 GroupViewWidget::~GroupViewWidget()
@@ -32,6 +47,16 @@ GroupViewWidget::~GroupViewWidget()
 		delete pScrollAreaWidget;
 		pScrollAreaWidget = NULL;
 	}
+	if (pGroupSettingsWidget)
+	{
+		delete pGroupSettingsWidget;
+		pGroupSettingsWidget = NULL;
+	}
+	if (pCamera)
+	{
+		delete pCamera;
+		pCamera = NULL;
+	}
 	if (pUI)
 	{
 		delete pUI;
@@ -42,12 +67,35 @@ GroupViewWidget::~GroupViewWidget()
 void GroupViewWidget::on_buttonNewGroup_clicked()
 {
 	//launch a new widget and get the user information
+	hide();
+	pGroupSettingsWidget->show();
+}
+
+void GroupViewWidget::GroupSettingsApplyButton()
+{
+	pGroupSettingsWidget->hide();
+	//get the information and show updated widgets
 
 	QPushButton* pButton = new QPushButton("test");
 	GroupNodeData* pNode = new GroupNodeData(pButton);
-	m_groupMap["test"] = pNode;
-	
+	m_groupMap["Camera Test Launch"] = pNode;
 	pScrollAreaLayout->addWidget(pButton);
+	connect(pButton, SIGNAL(clicked()), this, SLOT(ActivateCamera()));
+	
+	//Show this updated widget
+	show();
 }
 
+void GroupViewWidget::GroupSettingsCancelButton()
+{
+	pGroupSettingsWidget->hide();
+	show();
+}
 
+void GroupViewWidget::ActivateCamera()
+{
+	hide();
+
+	Q_ASSERT(pCamera);
+	pCamera->show();
+}
