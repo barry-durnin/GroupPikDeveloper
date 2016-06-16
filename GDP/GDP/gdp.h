@@ -4,9 +4,10 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_gdp.h"
 
-class GDPMessages;
-class LoginDialog;
 class CameraWidget;
+class GDPMessages;
+class GroupViewWidget;
+class LoginDialog;
 class GDP : public QMainWindow
 {
 	Q_OBJECT
@@ -20,6 +21,7 @@ public slots:
 private:
 	Ui::GDPClass ui;
 	CameraWidget *pCamera;
+	GroupViewWidget* pGroupView;
     LoginDialog *pLogin;
 };
 
