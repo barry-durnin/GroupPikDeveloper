@@ -39,9 +39,10 @@ public:
 
 private slots:
 	void on_buttonNewGroup_clicked();
-	void GroupSettingsApplyButton();
-	void GroupSettingsCancelButton();
+	void GroupSettingsApply();
+	void GroupSettingsCancel();
 	void ActivateCamera();
+	void CameraWidgetHide();
 private:
 	Ui::GroupView* pUI;
 	QWidget*	pScrollAreaWidget;

@@ -151,6 +151,15 @@ void CameraWidget::on_buttonClick_clicked()
 	pCamera->unlock();
 }
 
+void CameraWidget::on_pushButtonClose_clicked()
+{
+	if (pCamera)
+	{
+		pCamera->stop();
+	}
+	emit CameraWidgetCloseButton();
+}
+
 void CameraWidget::processSavedImage(int requestId, QString str)
 {
 	QByteArray message = "";

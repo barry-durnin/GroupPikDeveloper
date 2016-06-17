@@ -8,6 +8,7 @@
 #include "ui_groupview.h"
 #include "ui_groupviewsettings.h"
 #include <QDebug>
+#include <QMessageBox>
 
 GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui::GroupView)
 {
@@ -22,9 +23,11 @@ GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui:
 	//This widget is a fried class, allows access to the ui member within
 	pGroupSettingsWidget = new GroupViewSettingsWidget(parent);
 	pGroupSettingsWidget->hide();
-	//connect the settings widget button pressed to signal this widget. this widget will know when cancel and apply buttons have been clicked
-	connect(pGroupSettingsWidget->pUI->pushButtonApply, SIGNAL(clicked()), this, SLOT(GroupSettingsApplyButton()));
-	connect(pGroupSettingsWidget->pUI->pushButtonCancel, SIGNAL(clicked()), this, SLOT(GroupSettingsCancelButton()));
+
+	connect(pGroupSettingsWidget, SIGNAL(GroupViewSettingsApply()), this, SLOT(GroupSettingsApply()));
+	connect(pGroupSettingsWidget, SIGNAL(GroupViewSettingsCancel()), this, SLOT(GroupSettingsCancel()));
+
+	connect(pCamera, SIGNAL(CameraWidgetCloseButton()), this, SLOT(CameraWidgetHide()));
 }
 
 GroupViewWidget::~GroupViewWidget()
@@ -71,23 +74,37 @@ void GroupViewWidget::on_buttonNewGroup_clicked()
 	pGroupSettingsWidget->show();
 }
 
-void GroupViewWidget::GroupSettingsApplyButton()
+void GroupViewWidget::GroupSettingsApply()
 {
-	pGroupSettingsWidget->hide();
 	//get the information and show updated widgets
+	QString name = pGroupSettingsWidget->GetGroupName();
+	if (m_groupMap.find(name) == m_groupMap.end())
+	{
+		QPushButton* pButton = new QPushButton(name);
+		GroupNodeData* pNode = new GroupNodeData(pButton);
+		m_groupMap[name] = pNode;
+		pScrollAreaLayout->addWidget(pButton);
 
-	QPushButton* pButton = new QPushButton("test");
-	GroupNodeData* pNode = new GroupNodeData(pButton);
-	m_groupMap["Camera Test Launch"] = pNode;
-	pScrollAreaLayout->addWidget(pButton);
-	connect(pButton, SIGNAL(clicked()), this, SLOT(ActivateCamera()));
-	
-	//Show this updated widget
-	show();
+		pGroupSettingsWidget->hide();
+		pGroupSettingsWidget->ClearFields();
+		connect(pButton, SIGNAL(clicked()), this, SLOT(ActivateCamera()));
+
+		//Show this updated widget
+		show();
+	}
+	else
+	{
+		//keep the group view settings widget active and tell the user to change the group name
+		QMessageBox messageBox;
+		messageBox.critical(this, "Error", "Group already exists, change the group name");
+		messageBox.setFixedSize(500, 200);
+		return;
+	}
 }
 
-void GroupViewWidget::GroupSettingsCancelButton()
+void GroupViewWidget::GroupSettingsCancel()
 {
+	pGroupSettingsWidget->ClearFields();
 	pGroupSettingsWidget->hide();
 	show();
 }
@@ -98,4 +115,10 @@ void GroupViewWidget::ActivateCamera()
 
 	Q_ASSERT(pCamera);
 	pCamera->show();
+}
+
+void GroupViewWidget::CameraWidgetHide()
+{
+	pCamera->hide();
+	show();
 }

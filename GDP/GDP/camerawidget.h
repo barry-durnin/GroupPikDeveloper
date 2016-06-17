@@ -21,9 +21,11 @@ public:
     explicit CameraWidget(QWidget *parent = 0);
     ~CameraWidget();
     void show();
-
+signals:
+	void CameraWidgetCloseButton();
 private slots:
 	void on_buttonClick_clicked();
+	void on_pushButtonClose_clicked();
 	void processSavedImage(int requestId, QString str);
 private:
     void CameraDialogOpen();

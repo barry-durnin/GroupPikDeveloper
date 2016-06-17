@@ -11,12 +11,19 @@ namespace Ui
 class GroupViewSettingsWidget : public QWidget
 {
 	Q_OBJECT
-	friend class GroupViewWidget;
 public:
 	explicit GroupViewSettingsWidget(QWidget *parent = 0);
 	~GroupViewSettingsWidget();
 
-private slots:
+	void ClearFields();
+	QString GetGroupName();
+signals:
+	void GroupViewSettingsApply();
+	void GroupViewSettingsCancel();
+private slots :
+	void on_pushButtonApply_clicked();
+	void on_pushButtonCancel_clicked();
+
 private:
 	Ui::GroupViewSettings* pUI;
 };
