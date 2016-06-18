@@ -1,3 +1,10 @@
+/*****************************************************************************
+Message packet file
+File message as byte array
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #include "messagefile.h"
 
 MessageFile::MessageFile()

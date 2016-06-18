@@ -1,3 +1,9 @@
+/*****************************************************************************
+Message packet login
+Login data message
+
+Authored by Barry Durnin.
+******************************************************************************/
 #include "messagelogin.h"
 
 #include <QStringList>

@@ -1,3 +1,12 @@
+/*****************************************************************************
+User interaction widget
+Dynamically adds groups to the scroll widget and gathers information from the group view widget
+Handles group view ui communication from the user input
+Spawns the camera widget on group selection
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #ifndef __GROUPVIEW_H__
 #define __GROUPVIEW_H__
 

@@ -1,3 +1,10 @@
+/*****************************************************************************
+Tcp socket
+Listens for and writes data
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #include "tcpsocket.h"
 
 #include "gdpmessages.h"

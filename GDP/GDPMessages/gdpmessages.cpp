@@ -1,3 +1,12 @@
+/*****************************************************************************
+Message library manager
+
+Generates message data packets
+Reads message data packets
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #include "gdpmessages.h"
 
 #include "messagebase.h"

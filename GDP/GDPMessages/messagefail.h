@@ -1,3 +1,9 @@
+/*****************************************************************************
+Message packet fail
+Fail message
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef __MESSAGEFAIL_H__
 #define __MESSAGEFAIL_H__
 

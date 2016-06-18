@@ -1,3 +1,9 @@
+/*****************************************************************************
+Message packet fail
+Fail message
+
+Authored by Barry Durnin.
+******************************************************************************/
 #include "messagefail.h"
 
 MessageFail::MessageFail()

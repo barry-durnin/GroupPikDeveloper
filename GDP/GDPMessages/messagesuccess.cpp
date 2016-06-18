@@ -1,3 +1,10 @@
+/*****************************************************************************
+Message packet success
+Success data message
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #include "messagesuccess.h"
 
 MessageSuccess::MessageSuccess()

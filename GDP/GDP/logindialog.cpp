@@ -1,3 +1,11 @@
+/*****************************************************************************
+Login widget
+Gathers the user login details from the login widget
+Communicates with the server and determines if the login details are correct
+Closes the widget when login is successful allowing the main window to trigger the groupview widget
+
+Authored by Barry Durnin.
+******************************************************************************/
 #include "logindialog.h"
 
 //Local
@@ -14,12 +22,22 @@
 #include <QDebug>
 #include <QMessageBox>
 
+/**************************************************************************************************************
+Constructor
+**************************************************************************************************************/
 LoginDialog::LoginDialog(QWidget *parent) : QWidget(parent), ui(new Ui::Login)
 {
 	ui->setupUi(this);
+
+	//DOnt need to this, override the function with name of the button like this on_buttonLogin_clicked
+	// buttonLogin is the name within the widget ui, the clicked is the signal doing the event trigger below will cause this function to be triggered twice
 	//connect(ui->buttonLogin, SIGNAL(clicked()), this, SLOT(on_buttonLogin_clicked()));
 }
 
+/**************************************************************************************************************
+Destructor
+Clean up the objects
+**************************************************************************************************************/
 LoginDialog::~LoginDialog()
 {
 	if (ui)
@@ -29,6 +47,11 @@ LoginDialog::~LoginDialog()
 	}
 }
 
+/**************************************************************************************************************
+Triggered by the login button being pressed
+Checks the input data
+communicates with the server and verifies the login data
+**************************************************************************************************************/
 void LoginDialog::on_buttonLogin_clicked()
 {
 	MessageBaseData* data = NULL;

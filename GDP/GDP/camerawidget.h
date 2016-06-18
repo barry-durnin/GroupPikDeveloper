@@ -1,3 +1,12 @@
+/*****************************************************************************
+Camera widget
+Initialises the devices camera and manages the camera functionality
+Communicates with the camera widget ui and handles the user events
+Stores the images captures and sends the byte data to the server
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #ifndef CAMERAWIDGET_H
 #define CAMERAWIDGET_H
 
@@ -28,7 +37,6 @@ private slots:
 	void on_pushButtonClose_clicked();
 	void processSavedImage(int requestId, QString str);
 private:
-    void CameraDialogOpen();
     bool CheckCameraAvailability();
     bool InitialiseCamera();
 private:

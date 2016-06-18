@@ -1,3 +1,12 @@
+/*****************************************************************************
+Message library manager
+
+Generates message data packets 
+Reads message data packets
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #ifndef GDPMESSAGES_H
 #define GDPMESSAGES_H
 

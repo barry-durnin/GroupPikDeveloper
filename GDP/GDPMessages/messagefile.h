@@ -1,3 +1,9 @@
+/*****************************************************************************
+Message packet file
+File message as byte array
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef __MESSAGEFILE_H__
 #define __MESSAGEFILE_H__
 

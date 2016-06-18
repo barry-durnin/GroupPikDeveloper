@@ -1,3 +1,11 @@
+/*****************************************************************************
+Camera widget
+Initialises the devices camera and manages the camera functionality
+Communicates with the camera widget ui and handles the user events
+Stores the images captures and sends the byte data to the server
+
+Authored by Barry Durnin.
+******************************************************************************/
 #include "camerawidget.h"
 
 //local
@@ -20,6 +28,11 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 
+/**************************************************************************************************************
+Constructor
+Initialises the camera device
+Initialises the camera graphic area to display the image in
+ **************************************************************************************************************/
 CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::CameraWidget)
 {
     ui->setupUi(this);
@@ -31,16 +44,17 @@ CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Camera
 	if (!InitialiseCamera())
 	{
 		qDebug() << "Failed to initialise the camera module";
-		return;
 	}
 
 	pLayout = new QVBoxLayout;
 	pLayout->addWidget(pViewFinder);
 	ui->CaptureArea->setLayout(pLayout);
-
-	//connect(ui->buttonClick, SIGNAL(clicked()), this, SLOT(on_buttonClick_clicked()));
 }
 
+/**************************************************************************************************************
+Destructor
+Clean up the objects
+**************************************************************************************************************/
 CameraWidget::~CameraWidget()
 {
 	if (pLayout)
@@ -72,21 +86,23 @@ CameraWidget::~CameraWidget()
 	}
 }
 
-//Override the show event
+/**************************************************************************************************************
+Override show event
+Trigger the camera start event
+**************************************************************************************************************/
 void CameraWidget::show()
 {
-    CameraDialogOpen();
-    QWidget::show();
+	if (pCamera && pViewFinder)
+	{
+		pCamera->start();
+	}
+	QWidget::show();
 }
 
-void CameraWidget::CameraDialogOpen()
-{
-    if(pCamera && pViewFinder)
-    {
-        pCamera->start();
-    }
-}
-
+/**************************************************************************************************************
+Override show event
+Trigger the camera start event
+**************************************************************************************************************/
 bool CameraWidget::CheckCameraAvailability()
 {
     if (QCameraInfo::availableCameras().count() > 0)
@@ -99,6 +115,12 @@ bool CameraWidget::CheckCameraAvailability()
     }
 }
 
+/**************************************************************************************************************
+Check the devices and create the camera object
+Create the graphic view finder object
+Create the image processing object
+create a signal event when images ares saved (imageSaved signals after the image capture object calls capture)
+**************************************************************************************************************/
 bool CameraWidget::InitialiseCamera()
 {
     if(CheckCameraAvailability())
@@ -139,18 +161,33 @@ bool CameraWidget::InitialiseCamera()
     return false;
 }
 
+/**************************************************************************************************************
+Click button event signaled from the ui
+Captures the image within the graphic view
+**************************************************************************************************************/
 void CameraWidget::on_buttonClick_clicked()
 {
-	//on half pressed shutter button
-	pCamera->searchAndLock();
+	if (pCamera && pImageCapture)
+	{
+		//on half pressed shutter button
+		pCamera->searchAndLock();
 
-	//on shutter button pressed
-	int id = pImageCapture->capture();
+		//on shutter button pressed
+		int id = pImageCapture->capture();
 
-	//on shutter button released
-	pCamera->unlock();
+		//on shutter button released
+		pCamera->unlock();
+	}
+	else
+	{
+		qDebug() << "Camera has not been initialsed correctly"
+	}
 }
 
+/**************************************************************************************************************
+Close button event signaled from the ui
+Stops the camera and emits the CameraWidgetCloseButton signal
+**************************************************************************************************************/
 void CameraWidget::on_pushButtonClose_clicked()
 {
 	if (pCamera)
@@ -160,6 +197,14 @@ void CameraWidget::on_pushButtonClose_clicked()
 	emit CameraWidgetCloseButton();
 }
 
+/**************************************************************************************************************
+Signal captured on image save
+Process the raw data into an image
+Send the raw information to the server 
+Listen for a response (success or fail)
+TODO: do not create a client connection. use the main client connection when is is created at a later date
+Remove the image from the device
+**************************************************************************************************************/
 void CameraWidget::processSavedImage(int requestId, QString str)
 {
 	QByteArray message = "";
@@ -196,8 +241,6 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 	}
 #endif
 
-	//delete the image off the hdd and store it within the app and sed the image to the server for storing
-	
 	//process
 	MessageBaseData* data = NULL;
 	TcpClient* pClient = new TcpClient(this);

@@ -1,3 +1,9 @@
+/*****************************************************************************
+Message packet success
+Success data message
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef __MESSAGESUCCESS_H__
 #define __MESSAGESUCCESS_H__
 

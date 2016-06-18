@@ -1,3 +1,10 @@
+/*****************************************************************************
+Message packet base class
+Abstract class that forces inherited classes to generated the main functions of a message packet
+Generates a the packet template with the data provided
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef MESSAGEBASE_H
 #define MESSAGEBASE_H
 

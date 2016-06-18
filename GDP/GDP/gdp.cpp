@@ -1,8 +1,21 @@
+/*****************************************************************************
+Application Main window
+Entry point widget.
+Spawns the login window and the main widget Group view once the login process os complete
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #include "gdp.h"
 
 #include "groupview.h"
 #include "logindialog.h"
 
+/**************************************************************************************************************
+Constructor
+Create the login widget and show it.
+Create an event that watches for the login widget to close
+**************************************************************************************************************/
 GDP::GDP(QWidget *parent) : QMainWindow(parent), pLogin(NULL), pGroupView(NULL)
 {
 	ui.setupUi(this);
@@ -15,6 +28,10 @@ GDP::GDP(QWidget *parent) : QMainWindow(parent), pLogin(NULL), pGroupView(NULL)
 	setCentralWidget(pLogin);
 }
 
+/**************************************************************************************************************
+Destructor
+Clean up the objects
+**************************************************************************************************************/
 GDP::~GDP()
 {
     if(pLogin)
@@ -29,6 +46,11 @@ GDP::~GDP()
 	}
 }
 
+/**************************************************************************************************************
+Slot function
+Triggers when the login widget to closes
+Opens the group view widget
+**************************************************************************************************************/
 void GDP::LoginClose()
 {
 	//login windows has been destroyed and the pointer released by qt. null the pointer for safety

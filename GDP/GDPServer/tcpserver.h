@@ -1,3 +1,10 @@
+/*****************************************************************************
+Tcp server
+Main class, handles the socket connection, incomming connection and message reading and writing
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 

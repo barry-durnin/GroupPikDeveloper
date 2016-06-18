@@ -1,3 +1,9 @@
+/*****************************************************************************
+Message packet login
+Login data message
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef MESSAGELOGIN_H
 #define MESSAGELOGIN_H
 

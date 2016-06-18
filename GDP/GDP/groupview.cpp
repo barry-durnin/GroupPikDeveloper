@@ -1,3 +1,12 @@
+/*****************************************************************************
+User interaction widget
+Dynamically adds groups to the scroll widget and gathers information from the group view widget
+Handles group view ui communication from the user input
+Spawns the camera widget on group selection
+
+Authored by Barry Durnin.
+******************************************************************************/
+
 #include "groupview.h"
 
 //local
@@ -10,9 +19,15 @@
 #include <QDebug>
 #include <QMessageBox>
 
+/**************************************************************************************************************
+Constructor
+Setup the group view widget and initialise events listeners
+**************************************************************************************************************/
 GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui::GroupView), pSelectedNode(NULL)
 {
 	pUI->setupUi(this);
+
+	//Set up the scroll area so new widgets can be added to it in a vertical layout
 	pScrollAreaWidget = new QWidget();
 	pScrollAreaLayout = new QVBoxLayout(pScrollAreaWidget);
 	pUI->scrollArea->setWidget(pScrollAreaWidget);
@@ -24,14 +39,18 @@ GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui:
 	pGroupSettingsWidget = new GroupViewSettingsWidget(parent);
 	pGroupSettingsWidget->hide();
 
+	//Custom signals triggered from the group view settings widget
 	connect(pGroupSettingsWidget, SIGNAL(GroupViewSettingsApply()), this, SLOT(GroupSettingsApply()));
 	connect(pGroupSettingsWidget, SIGNAL(GroupViewSettingsCancel()), this, SLOT(GroupSettingsCancel()));
 	connect(pGroupSettingsWidget, SIGNAL(GroupViewSettingsEdit()), this, SLOT(GroupSettingsEdit()));
-	
 
 	connect(pCamera, SIGNAL(CameraWidgetCloseButton()), this, SLOT(CameraWidgetHide()));
 }
 
+/**************************************************************************************************************
+Destructor
+Clean up the objects
+**************************************************************************************************************/
 GroupViewWidget::~GroupViewWidget()
 {
 	for (auto i = m_groupMap.begin(); i != m_groupMap.end(); ++i)
@@ -69,6 +88,9 @@ GroupViewWidget::~GroupViewWidget()
 	}
 }
 
+/**************************************************************************************************************
+Slot function from the New Group Button widget within the ui
+**************************************************************************************************************/
 void GroupViewWidget::on_buttonNewGroup_clicked()
 {
 	//launch a new widget and get the user information
@@ -77,6 +99,9 @@ void GroupViewWidget::on_buttonNewGroup_clicked()
 	pGroupSettingsWidget->show();
 }
 
+/**************************************************************************************************************
+Slot function from the Remove Group Button widget within the ui
+**************************************************************************************************************/
 void GroupViewWidget::on_buttonRemoveGroup_clicked()
 {
 	if (pSelectedNode)
@@ -95,6 +120,9 @@ void GroupViewWidget::on_buttonRemoveGroup_clicked()
 	}
 }
 
+/**************************************************************************************************************
+Slot function from the Edit Group Button widget within the ui
+**************************************************************************************************************/
 void GroupViewWidget::on_buttonEditGroup_clicked()
 {
 	if (pSelectedNode)
@@ -112,6 +140,10 @@ void GroupViewWidget::on_buttonEditGroup_clicked()
 	}
 }
 
+/**************************************************************************************************************
+Custom event slot function
+Once the group view settings widget has finished editing the data this event will trigger (Edit button event flow)
+**************************************************************************************************************/
 void GroupViewWidget::GroupSettingsEdit()
 {
 	bool bUpdate = false;
@@ -138,6 +170,10 @@ void GroupViewWidget::GroupSettingsEdit()
 	show();
 }
 
+/**************************************************************************************************************
+Custom event slot function
+Once the group view settings widget has finished editing the data this event will trigger (New group button event flow)
+**************************************************************************************************************/
 void GroupViewWidget::GroupSettingsApply()
 {
 	//get the information and show updated widgets
@@ -171,6 +207,9 @@ void GroupViewWidget::GroupSettingsApply()
 	}
 }
 
+/**************************************************************************************************************
+Loop the group map and reset all the nodes that store groups information
+**************************************************************************************************************/
 void GroupViewWidget::ResetGroupButtons()
 {
 	for (auto i = m_groupMap.begin(); i != m_groupMap.end(); ++i)
@@ -183,6 +222,11 @@ void GroupViewWidget::ResetGroupButtons()
 	pSelectedNode = NULL;
 }
 
+/**************************************************************************************************************
+Dynamically created button has been pressed by the user
+Check the button information and set it to selected if needed or launch the camera 
+if the button is already in a selected state
+**************************************************************************************************************/
 void GroupViewWidget::GroupButtonClicked()
 {
 	QPushButton* pButton = static_cast<QPushButton*>(QObject::sender());
@@ -214,12 +258,21 @@ void GroupViewWidget::GroupButtonClicked()
 	}
 }
 
+/**************************************************************************************************************
+Custom event slot function
+Once the group view settings widget cancel button has been click thuis event will trigger (Group view settings cancel button pressed)
+**************************************************************************************************************/
 void GroupViewWidget::GroupSettingsCancel()
 {
 	pGroupSettingsWidget->ClearFields();
 	pGroupSettingsWidget->hide();
 	show();
 }
+
+/**************************************************************************************************************
+Custom event slot function
+Once the group view settings widget cancel button has been click thuis event will trigger (Group view settings cancel button pressed)
+**************************************************************************************************************/
 
 void GroupViewWidget::ActivateCamera()
 {

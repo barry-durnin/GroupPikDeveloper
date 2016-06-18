@@ -1,3 +1,10 @@
+/*****************************************************************************
+Tcp client object
+Socket communication with the server
+Handles read and writes via the common message library
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 

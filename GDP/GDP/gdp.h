@@ -1,3 +1,10 @@
+/*****************************************************************************
+Application Main window
+Entry point widget.
+Spawns the login window and the main widget Group view once the login process os complete
+
+Authored by Barry Durnin.
+******************************************************************************/
 #ifndef GDP_H
 #define GDP_H
 
