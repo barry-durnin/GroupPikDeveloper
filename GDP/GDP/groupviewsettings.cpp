@@ -23,6 +23,11 @@ GroupViewSettingsWidget::GroupViewSettingsWidget(QWidget *parent) : QWidget(pare
 {
 	bEditMode = false;
 	pUI->setupUi(this);
+
+	int alignW = (parent->width() - width()) * 0.5f;
+	int alignH = (parent->height() - height()) * 0.5f;
+
+	move(alignW, alignH);
 }
 
 /**************************************************************************************************************

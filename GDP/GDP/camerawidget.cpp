@@ -41,6 +41,10 @@ CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Camera
     pImageCapture = NULL;
     pLayout = NULL;
 
+	int alignW = (parent->width() - width()) * 0.5f;
+	int alignH = (parent->height() - height()) * 0.5f;
+	move(alignW, alignH);
+
 	if (!InitialiseCamera())
 	{
 		qDebug() << "Failed to initialise the camera module";
@@ -180,7 +184,7 @@ void CameraWidget::on_buttonClick_clicked()
 	}
 	else
 	{
-		qDebug() << "Camera has not been initialsed correctly"
+		qDebug() << "Camera has not been initialsed correctly";
 	}
 }
 
