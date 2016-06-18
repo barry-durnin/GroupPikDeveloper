@@ -1,11 +1,16 @@
 #include "groupviewsettings.h"
 
+//local
+#include "groupview.h"
+
+//QT
 #include "ui_groupviewsettings.h"
 #include <QDebug>
 #include <QMessageBox>
 
 GroupViewSettingsWidget::GroupViewSettingsWidget(QWidget *parent) : QWidget(parent), pUI(new Ui::GroupViewSettings)
 {
+	bEditMode = false;
 	pUI->setupUi(this);
 }
 
@@ -29,6 +34,11 @@ QString GroupViewSettingsWidget::GetGroupName()
 	return pUI->lineEditGroupName->text();
 }
 
+QStringList GroupViewSettingsWidget::GetGroupMembers()
+{
+	return pUI->lineEditMembers->text().split(" ");
+}
+
 void GroupViewSettingsWidget::on_pushButtonApply_clicked()
 {
 	if (pUI->lineEditGroupName->text().length() <= 0)
@@ -45,10 +55,24 @@ void GroupViewSettingsWidget::on_pushButtonApply_clicked()
 		messageBox.setFixedSize(500, 200);
 		return;
 	}
-	emit GroupViewSettingsApply();
+	if (bEditMode)
+	{
+		emit GroupViewSettingsEdit();
+	}
+	else
+	{
+		emit GroupViewSettingsApply();
+	}
 }
 
 void GroupViewSettingsWidget::on_pushButtonCancel_clicked()
 {
 	emit GroupViewSettingsCancel();
+}
+
+void GroupViewSettingsWidget::PopulateFields(const GroupNodeData* const pSelectedNode)
+{
+	Q_ASSERT(pSelectedNode);
+	pUI->lineEditGroupName->setText(pSelectedNode->pButton->text());
+	pUI->lineEditMembers->setText(pSelectedNode->m_memberList.join(" "));
 }

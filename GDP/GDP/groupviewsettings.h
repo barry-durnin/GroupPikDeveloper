@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+struct GroupNodeData;
+
 namespace Ui
 {
 	class GroupViewSettings;
@@ -17,14 +19,19 @@ public:
 
 	void ClearFields();
 	QString GetGroupName();
+	QStringList GetGroupMembers();
+	void PopulateFields(const GroupNodeData* const pSelectedNode);
+	void EnableEditMode(bool bModeEdit) { bEditMode = bModeEdit; };
 signals:
 	void GroupViewSettingsApply();
+	void GroupViewSettingsEdit();
 	void GroupViewSettingsCancel();
 private slots :
 	void on_pushButtonApply_clicked();
 	void on_pushButtonCancel_clicked();
 
 private:
+	bool bEditMode;
 	Ui::GroupViewSettings* pUI;
 };
 

@@ -21,12 +21,19 @@ struct GroupNodeData
 	GroupNodeData()
 	{
 		pButton = NULL;
+		bSelected = false;
+		m_name = "";
 	}
-	GroupNodeData(QPushButton* button)
+	GroupNodeData(QPushButton* button, QString name, QStringList memberList) : GroupNodeData()
 	{
 		pButton = button;
+		m_memberList = memberList;
+		m_name = name;
 	}
 	QPushButton* pButton;
+	bool bSelected;
+	QStringList m_memberList;
+	QString m_name;
 };
 
 class GroupViewWidget : public QWidget
@@ -37,11 +44,16 @@ public:
 	explicit GroupViewWidget(QWidget *parent = 0);
 	~GroupViewWidget();
 
+	void ResetGroupButtons();
+	void ActivateCamera();
 private slots:
 	void on_buttonNewGroup_clicked();
+	void on_buttonRemoveGroup_clicked();
+	void on_buttonEditGroup_clicked();
 	void GroupSettingsApply();
+	void GroupSettingsEdit();
 	void GroupSettingsCancel();
-	void ActivateCamera();
+	void GroupButtonClicked();
 	void CameraWidgetHide();
 private:
 	Ui::GroupView* pUI;
@@ -53,6 +65,7 @@ private:
 	GroupViewSettingsWidget* pGroupSettingsWidget;
 
 	QMap<QString, GroupNodeData*> m_groupMap;
+	GroupNodeData* pSelectedNode;
 };
 
 #endif
