@@ -12,6 +12,8 @@ Authored by Barry Durnin.
 #include "messagebase.h"
 #include "messagefail.h"
 #include "messagefile.h"
+#include "messagegroupadd.h"
+#include "messagegroupedit.h"
 #include "messagelogin.h"
 #include "messagesuccess.h"
 
@@ -21,6 +23,8 @@ GDPMessages::GDPMessages()
 	m_mapMessages[fail] = new MessageFail();
 	m_mapMessages[login] = new MessageLogin();
 	m_mapMessages[file] = new MessageFile();
+	m_mapMessages[group_add] = new MessageGroupAdd();
+	m_mapMessages[group_edit] = new MessageGroupEdit();
 }
 
 GDPMessages::~GDPMessages()

@@ -66,6 +66,8 @@ private slots:
 	void GroupButtonClicked();
 	void CameraWidgetHide();
 private:
+	bool ServerAddGroup(const GroupNodeData* const pNode);
+	bool ServerEditGroup(const QString& oldName, const GroupNodeData* const pNode);
 	//internal widget manipulation
 	Ui::GroupView* pUI;
 	QWidget*	pScrollAreaWidget;

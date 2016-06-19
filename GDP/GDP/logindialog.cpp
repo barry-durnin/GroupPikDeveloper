@@ -75,15 +75,15 @@ void LoginDialog::on_buttonLogin_clicked()
 		return;
 	}
 
+	if (ui->checkBoxStayLoggedIn->checkState() == Qt::Checked)
+	{
+		//stay logged in is checked. store some information that this device is verified and login automatically next launch
+	}
+
 	//connect to the login server
 	TcpClient* pClient = new TcpClient(this);
 	if (pClient->IsConnected())
 	{
-		if (ui->checkBoxStayLoggedIn->checkState() == Qt::Checked)
-		{
-			//stay logged in is checked. store some information that this device is verified and login automatically next launch
-		}
-
 		MessageLoginData loginData(username, password);
 		Q_ASSERT(pClient->GetMessageManager());
 		if (!pClient->GetMessageManager()->CreateMessage(message, &loginData))
@@ -110,7 +110,7 @@ void LoginDialog::on_buttonLogin_clicked()
 				bSuccess = true;
 				break;
 			default:
-				qDebug() << "Unknown message recieved id: " << data->eType;
+				qDebug() << "Unknown message received id: " << data->eType;
 				break;
 			}
 		}

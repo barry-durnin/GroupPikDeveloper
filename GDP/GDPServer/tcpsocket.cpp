@@ -11,6 +11,8 @@ Authored by Barry Durnin.
 #include "messagebase.h"
 #include "messagefail.h"
 #include "messagefile.h"
+#include "messagegroupadd.h"
+#include "messagegroupedit.h"
 #include "messagelogin.h"
 #include "messagesuccess.h"
 
@@ -30,7 +32,7 @@ TcpSocket::TcpSocket(QTcpSocket* socket, QObject *parent) : QObject(parent)
 	}
 	else
 	{
-		qDebug() << "No valid socket provided to the tcp socket class";
+		qDebug() << "No valid socket provided to the TCP socket class";
 	}
 
 	pMessageManager = new GDPMessages();
@@ -70,12 +72,14 @@ void TcpSocket::readyRead()
 		bool bSuccess = false;
 		MessageLoginData* loginData;
 		MessageFileData* fileData;
+		MessageGroupAddData* groupAddData;
+		MessageGroupEditData* groupEditData;
 
 		QByteArray outMessage = "";
 		QByteArray buffer = pSocket->readAll();
 		MessageBaseData* data;
 
-		unsigned int size = pMessageManager->GetMessageSize(buffer);
+		int size = pMessageManager->GetMessageSize(buffer);
 		if (buffer.size() < size)
 		{
 			while (buffer.size() < size)
@@ -85,7 +89,6 @@ void TcpSocket::readyRead()
 				//TODO include a break out clause
 			}
 		}
-
 
 		data = pMessageManager->ReadMessage(buffer);
 		switch (data->eType)
@@ -112,6 +115,14 @@ void TcpSocket::readyRead()
 				}
 			}
 			break;
+		case group_add:
+			groupAddData = static_cast<MessageGroupAddData*>(data);
+			bSuccess = true;
+			break;
+		case group_edit:
+			groupEditData = static_cast<MessageGroupEditData*>(data);
+			bSuccess = true;
+			break;
 		default:
 			qDebug() << "Unknown Message id: " << data->eType;
 			break;
@@ -122,7 +133,7 @@ void TcpSocket::readyRead()
 			MessageSuccessData successData;
 			if (!pMessageManager->CreateMessage(outMessage, &successData))
 			{
-				qDebug() << "Failed to create sucess message";
+				qDebug() << "Failed to create success message";
 			}
 			pSocket->write(outMessage);
 		}

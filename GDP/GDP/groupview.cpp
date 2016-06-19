@@ -14,6 +14,11 @@ Authored by Barry Durnin.
 #include "groupviewsettings.h"
 #include "tcpclient.h"
 
+//message
+#include <gdpmessages.h>
+#include <messagegroupadd.h>
+#include <messagegroupedit.h>
+
 //qt
 #include "ui_groupview.h"
 #include "ui_groupviewsettings.h"
@@ -165,18 +170,118 @@ void GroupViewWidget::GroupSettingsEdit()
 		bUpdate = true;
 	}
 
-	if(bUpdate)
-	{ 
-		m_groupMap.remove(pSelectedNode->m_name);
-		pSelectedNode->m_name = pGroupSettingsWidget->GetGroupName();
-		pSelectedNode->m_memberList = pGroupSettingsWidget->GetGroupMembers();
-		pSelectedNode->pButton->setText(pSelectedNode->m_name);
-		m_groupMap[pSelectedNode->m_name] = pSelectedNode;
+	if (bUpdate)
+	{
+		GroupNodeData node(NULL, pGroupSettingsWidget->GetGroupName(), pGroupSettingsWidget->GetGroupMembers());
+		if (ServerEditGroup(pSelectedNode->m_name, &node))
+		{
+			m_groupMap.remove(pSelectedNode->m_name);
+			pSelectedNode->m_name = pGroupSettingsWidget->GetGroupName();
+			pSelectedNode->m_memberList = pGroupSettingsWidget->GetGroupMembers();
+			pSelectedNode->pButton->setText(pSelectedNode->m_name);
+			m_groupMap[pSelectedNode->m_name] = pSelectedNode;
+		}
+		else
+		{
+			qDebug() << "Failed to edit server records on the group";
+		}
 	}
 
 	pGroupSettingsWidget->hide();
 	pGroupSettingsWidget->ClearFields();
 	show();
+}
+
+/**************************************************************************************************************
+On group edit communicate with the server and tell the server about the group the user wishes to edit
+old name can be the same as the new name. user may have edited the members etc. this will only be called 
+when the group has been edited
+**************************************************************************************************************/
+bool GroupViewWidget::ServerEditGroup(const QString& oldName, const GroupNodeData* const pNode)
+{
+	bool bSuccess = false;
+	Q_ASSERT(pClient);
+	if (pClient->IsConnected())
+	{
+		MessageBaseData* data = NULL;
+		QByteArray message;
+		MessageGroupEditData groupData(oldName, pNode->m_name, pNode->m_memberList);
+		Q_ASSERT(pClient->GetMessageManager());
+		if (!pClient->GetMessageManager()->CreateMessage(message, &groupData))
+		{
+			//error
+		}
+
+		pClient->Write(message);
+		pClient->Flush();
+		pClient->WaitForBytesWritten(1000);
+
+		pClient->WaitForBytesRead();
+		data = pClient->GetLastMessage();
+		if (data)
+		{
+			QMessageBox messageBox;
+			switch (data->eType)
+			{
+			case fail:
+				messageBox.critical(this, "Error", "Failed to create the group on the server");
+				messageBox.setFixedSize(500, 200);
+				break;
+			case success:
+				bSuccess = true;
+				break;
+			default:
+				qDebug() << "Unknown message received id: " << data->eType;
+				break;
+			}
+		}
+	}
+	return bSuccess;
+}
+
+/**************************************************************************************************************
+On group add communicate with the server and tell the server about the group the user wishes to add
+**************************************************************************************************************/
+bool GroupViewWidget::ServerAddGroup(const GroupNodeData* const pNode)
+{
+	bool bSuccess = false;
+	Q_ASSERT(pClient);
+	if (pClient->IsConnected())
+	{
+		MessageBaseData* data = NULL;
+		QByteArray message;
+		MessageGroupAddData groupData(pNode->m_name, pNode->m_memberList);
+		Q_ASSERT(pClient->GetMessageManager());
+		if (!pClient->GetMessageManager()->CreateMessage(message, &groupData))
+		{
+			//error
+		}
+
+		pClient->Write(message);
+		pClient->Flush();
+		pClient->WaitForBytesWritten(1000);
+
+		pClient->WaitForBytesRead();
+		data = pClient->GetLastMessage();
+		if (data)
+		{
+			QMessageBox messageBox;
+			switch (data->eType)
+			{
+			case fail:
+				messageBox.critical(this, "Error", "Failed to create the group on the server");
+				messageBox.setFixedSize(500, 200);
+				break;
+			case success:
+				bSuccess = true;
+				break;
+			default:
+				qDebug() << "Unknown message received id: " << data->eType;
+				break;
+			}
+		}
+	}
+	return bSuccess;
 }
 
 /**************************************************************************************************************
@@ -194,14 +299,21 @@ void GroupViewWidget::GroupSettingsApply()
 		pButton->setAutoFillBackground(true);
 
 		GroupNodeData* pNode = new GroupNodeData(pButton, name, memberList);
-		m_groupMap[name] = pNode;
+		if (ServerAddGroup(pNode))
+		{
+			m_groupMap[name] = pNode;
+			pScrollAreaLayout->addWidget(pButton);
 
-
-		pScrollAreaLayout->addWidget(pButton);
-
-		pGroupSettingsWidget->hide();
-		pGroupSettingsWidget->ClearFields();
-		connect(pButton, SIGNAL(clicked()), this, SLOT(GroupButtonClicked()));
+			pGroupSettingsWidget->hide();
+			pGroupSettingsWidget->ClearFields();
+			connect(pButton, SIGNAL(clicked()), this, SLOT(GroupButtonClicked()));
+		}
+		else
+		{
+			qDebug() << "Critical error. server did not add the group";
+			delete pButton;
+			delete pNode;
+		}
 
 		//Show this updated widget
 		show();
@@ -280,9 +392,8 @@ void GroupViewWidget::GroupSettingsCancel()
 
 /**************************************************************************************************************
 Custom event slot function
-Once the group view settings widget cancel button has been click thuis event will trigger (Group view settings cancel button pressed)
+Once the group view settings widget cancel button has been click this event will trigger (Group view settings cancel button pressed)
 **************************************************************************************************************/
-
 void GroupViewWidget::ActivateCamera()
 {
 	hide();
@@ -291,6 +402,9 @@ void GroupViewWidget::ActivateCamera()
 	pCamera->show();
 }
 
+/**************************************************************************************************************
+Hide the camera widget and show this
+**************************************************************************************************************/
 void GroupViewWidget::CameraWidgetHide()
 {
 	pCamera->hide();

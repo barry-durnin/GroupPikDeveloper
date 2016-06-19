@@ -18,6 +18,8 @@ enum MessageType
 	file,
 	login,
 	success,
+	group_add,
+	group_edit,
 	max_message_type
 };
 
