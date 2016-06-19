@@ -33,7 +33,7 @@ Constructor
 Initialises the camera device
 Initialises the camera graphic area to display the image in
  **************************************************************************************************************/
-CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::CameraWidget)
+CameraWidget::CameraWidget(TcpClient* pClientConnection, QWidget *parent) : QWidget(parent), ui(new Ui::CameraWidget)
 {
     ui->setupUi(this);
     pCamera = NULL;
@@ -53,6 +53,8 @@ CameraWidget::CameraWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Camera
 	pLayout = new QVBoxLayout;
 	pLayout->addWidget(pViewFinder);
 	ui->CaptureArea->setLayout(pLayout);
+
+	pClient = pClientConnection;
 }
 
 /**************************************************************************************************************
@@ -247,7 +249,6 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 
 	//process
 	MessageBaseData* data = NULL;
-	TcpClient* pClient = new TcpClient(this);
 	if (pClient->IsConnected())
 	{
 		MessageFileData fileData(szFile);
@@ -300,10 +301,6 @@ void CameraWidget::processSavedImage(int requestId, QString str)
 			}
 		}
 	}
-
-	//close connection
-	delete pClient;
-	pClient = NULL;
 
 	//delete the file off the device
 	if (!QFile::remove(str))

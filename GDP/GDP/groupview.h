@@ -15,6 +15,7 @@ Authored by Barry Durnin.
 
 class CameraWidget;
 class GroupViewSettingsWidget;
+class TcpClient;
 
 class QPushButton;
 class QVBoxLayout;
@@ -65,16 +66,21 @@ private slots:
 	void GroupButtonClicked();
 	void CameraWidgetHide();
 private:
+	//internal widget manipulation
 	Ui::GroupView* pUI;
 	QWidget*	pScrollAreaWidget;
 	QVBoxLayout* pScrollAreaLayout;
 
+	//Controlled widgets
 	CameraWidget *pCamera;
-
 	GroupViewSettingsWidget* pGroupSettingsWidget;
 
+	//Internal logic of groups
 	QMap<QString, GroupNodeData*> m_groupMap;
 	GroupNodeData* pSelectedNode;
+
+	//Networking
+	TcpClient* pClient;
 };
 
 #endif

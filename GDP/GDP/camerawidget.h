@@ -12,6 +12,8 @@ Authored by Barry Durnin.
 
 #include <QWidget>
 
+class TcpClient;
+
 class QCamera;
 class QCameraViewfinder;
 class QCameraImageCapture;
@@ -27,7 +29,7 @@ class CameraWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CameraWidget(QWidget *parent = 0);
+    explicit CameraWidget(TcpClient* pClientConnection, QWidget *parent = 0);
     ~CameraWidget();
     void show();
 signals:
@@ -45,6 +47,7 @@ private:
     QCameraViewfinder* pViewFinder;
     QCameraImageCapture* pImageCapture;
     QVBoxLayout* pLayout;
+	TcpClient* pClient;
 };
 
 #endif // CAMERAWIDGET_H

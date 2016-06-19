@@ -12,6 +12,7 @@ Authored by Barry Durnin.
 //local
 #include "camerawidget.h"
 #include "groupviewsettings.h"
+#include "tcpclient.h"
 
 //qt
 #include "ui_groupview.h"
@@ -23,8 +24,11 @@ Authored by Barry Durnin.
 Constructor
 Setup the group view widget and initialise events listeners
 **************************************************************************************************************/
-GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui::GroupView), pSelectedNode(NULL)
+GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui::GroupView), pSelectedNode(NULL), pClient(NULL)
 {
+	//Connect to the server
+	pClient = new TcpClient(this);
+
 	pUI->setupUi(this);
 
 	//Set up the scroll area so new widgets can be added to it in a vertical layout
@@ -33,7 +37,7 @@ GroupViewWidget::GroupViewWidget(QWidget *parent) : QWidget(parent), pUI(new Ui:
 	pUI->scrollArea->setWidget(pScrollAreaWidget);
 	pUI->scrollArea->setWidgetResizable(true);
 
-	pCamera = new CameraWidget(parent);
+	pCamera = new CameraWidget(pClient, parent);
 
 	//This widget is a fried class, allows access to the ui member within
 	pGroupSettingsWidget = new GroupViewSettingsWidget(parent);
@@ -85,6 +89,11 @@ GroupViewWidget::~GroupViewWidget()
 	{
 		delete pUI;
 		pUI = NULL;
+	}
+	if (pClient)
+	{
+		delete pClient;
+		pClient = NULL;
 	}
 }
 
