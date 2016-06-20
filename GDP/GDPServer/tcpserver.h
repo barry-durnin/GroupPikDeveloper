@@ -1,36 +1,29 @@
-/*****************************************************************************
-Tcp server
-Main class, handles the socket connection, incomming connection and message reading and writing
-
-Authored by Barry Durnin.
-******************************************************************************/
-
-#ifndef TCPSERVER_H
-#define TCPSERVER_H
+#pragma once
 
 #include <QObject>
 #include <QVector>
 
-class Database;
-class TcpSocket;
-
 class QTcpServer;
 
-class TcpServer : public QObject
+namespace gdpserver
 {
-    Q_OBJECT
-public:
-    explicit TcpServer(QObject *parent = 0);
-    ~TcpServer();
-signals:
+	class sDatabase;
+	class sTCPSocket;
 
-public slots:
-    void newConnection();
-private:
-    QTcpServer *pServer;
-    Database *pDatabase;
-	QVector<TcpSocket*> m_connectedSockets;
-};
+	class sTCPServer : public QObject
+	{
+		Q_OBJECT
+	public:
+		explicit sTCPServer(QObject *parent = 0);
+		~sTCPServer();
+	signals:
 
-#endif // TCPSERVER_H
+	public slots :
+		void newConnection();
 
+	private:
+		QTcpServer*				m_server;
+		QVector<sTCPSocket*>	m_connectedSockets;
+		sDatabase*				m_database;	// @todo: Move this somewhere more sane.
+	};
+}

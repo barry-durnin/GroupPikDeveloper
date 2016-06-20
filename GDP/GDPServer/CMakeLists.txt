@@ -12,6 +12,7 @@ set(CMAKE_AUTOUIC ON)
 set(GDP_SERVER_INCLUDE
 	"${PROJECT_SOURCE_DIR}/GDP"
 	"${PROJECT_SOURCE_DIR}/GDPMessages"
+	"${SQLITE3_INCLUDE_DIR}"
 )
 
 file(GLOB_RECURSE GDP_SERVER_SOURCES
@@ -37,6 +38,7 @@ target_compile_definitions	(${GDP_SERVER_TARGET} PRIVATE ${GDP_COMPILE_DEFS})
 target_include_directories	(${GDP_SERVER_TARGET} PRIVATE ${GDP_SERVER_INCLUDE})
 target_link_libraries		(${GDP_SERVER_TARGET}
 								${GDP_MESSAGES_TARGET}
+								${SQLITE3_LIBRARIES}
 								Qt5::Widgets 
 								Qt5::Multimedia
 								Qt5::MultimediaWidgets

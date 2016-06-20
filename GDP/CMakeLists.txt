@@ -19,7 +19,7 @@ option(GDP_ENABLE_FRIENDLY_NAMES 	"Enables friendly project names on MSVC"			ON)
 # CMake configuration
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(PE_LIMIT_CONFIGS)
+if(GDP_LIMIT_CONFIGS)
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Limited Configs" FORCE)
 endif()
 
@@ -49,6 +49,8 @@ GDP_SETUP_PLATFORM()
 #		This folder should contain a folder named "msvc2015_64" (and others maybe)
 GDP_SETUP_QT()
 
+find_package(SQLite3)
+
 # Binary destination
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PLATFORM_BINARIES_PATH})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PLATFORM_BINARIES_PATH})
@@ -62,7 +64,7 @@ message(STATUS "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 message("                 Configuring options                 ")
 message(STATUS "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-set(GDP_COMPILE_FLAGS ${PLATFOMR_COMPILE_FLAGS})
+set(GDP_COMPILE_FLAGS ${PLATFORM_COMPILE_FLAGS})
 set(GDP_COMPILE_DEFS ${PLATFORM_COMPILE_DEFS})
 
 # This is an example of how to setup an option, theres the option name which is

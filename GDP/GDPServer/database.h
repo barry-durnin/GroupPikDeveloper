@@ -1,23 +1,24 @@
-/*****************************************************************************
-Database
+#pragma once
 
-Authored by Barry Durnin.
-******************************************************************************/
+#include <mutex>
+#include <sqlite3.h>
+#include <string>
 
-#ifndef DATABASE_H
-#define DATABASE_H
-
-#include <QObject>
-
-class Database : public QObject
+namespace gdpserver
 {
-    Q_OBJECT
-public:
-    explicit Database(QObject *parent = 0);
-    ~Database();
-signals:
+	class sDatabase
+	{
+	public:
+		sDatabase();
+		~sDatabase();
 
-public slots:
-};
+		bool ExecuteSQL(const std::string& sql);
 
-#endif // DATABASE_H
+	private:
+		void Open();
+		void Close();
+
+		sqlite3*	m_connection;
+		std::mutex	m_mutex;
+	};
+}

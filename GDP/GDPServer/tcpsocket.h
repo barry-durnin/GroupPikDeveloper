@@ -1,33 +1,27 @@
-/*****************************************************************************
-Tcp socket
-Listens for and writes data
-
-Authored by Barry Durnin.
-******************************************************************************/
-
-#ifndef TCPSOCKET_H
-#define TCPSOCKET_H
+#pragma once
 
 #include <QObject>
 
 class GDPMessages;
 class QTcpSocket;
-class TcpSocket : public QObject
+
+namespace gdpserver
 {
-	Q_OBJECT
+	class sTCPSocket : public QObject
+	{
+		Q_OBJECT
 
-public:
-	TcpSocket(QTcpSocket* socket, QObject *parent);
-	~TcpSocket();
-signals:
+	public:
+		sTCPSocket(QTcpSocket* socket, QObject *parent);
+		~sTCPSocket();
 
-public slots :
-	void disconnected();
-	void bytesWritten(qint64 size);
-	void readyRead();
-private:
-	QTcpSocket*	pSocket;
-	GDPMessages* pMessageManager;
-};
+	public slots :
+		void disconnected();
+		void bytesWritten(qint64 size);
+		void readyRead();
 
-#endif // TCPSOCKET_H
+	private:
+		QTcpSocket*		m_socket;
+		GDPMessages*	m_messageManager;
+	};
+}
