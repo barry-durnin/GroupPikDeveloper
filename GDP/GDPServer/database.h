@@ -6,6 +6,7 @@
 
 namespace gdpserver
 {
+	typedef int (*SqlCallback)(void*, int, char**, char**);
 	class sDatabase
 	{
 	public:
@@ -13,11 +14,12 @@ namespace gdpserver
 		~sDatabase();
 
 		bool ExecuteSQL(const std::string& sql);
+		bool ExecuteSQLCallback(const std::string& sql, SqlCallback functionCallBack, void* pOwner);
 
+		int SqlCBUsersExists(int argc, char **argv, char **azColName);
 	private:
 		void Open();
 		void Close();
-
 		sqlite3*	m_connection;
 		std::mutex	m_mutex;
 	};

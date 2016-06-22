@@ -111,14 +111,15 @@ Trigger the camera start event
 **************************************************************************************************************/
 bool CameraWidget::CheckCameraAvailability()
 {
-    if (QCameraInfo::availableCameras().count() > 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    //if (QCameraInfo::availableCameras().count() > 0)
+    //{
+    //    return true;
+    //}
+    //else
+    //{
+    //    return false;
+    //}
+    return true;
 }
 
 /**************************************************************************************************************
